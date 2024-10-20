@@ -1,0 +1,29 @@
+{
+  "name": "projeto-final",
+  "version": "0.0.1",
+  "description": "Plataforma cliente-servidor para projeto final de disciplina.",
+  "type": "module",
+  "scripts": {
+    "start": "node ./src/bin/www"
+  },
+  "author": {
+    "name": "Adriana Peres de Oliveira",
+    "email": "dricacpa@gmail.com"
+  },
+  "packageManager": "npm@10.9.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "dependencies": {
+    "cookie-parser": "~1.4.4",
+    "express": "~4.16.1",
+    "express-handlebars": "^8.0.1",
+    "luxon": "^3.5.0",
+    "rxdb": "^15.36.1"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.7"
+  },
+  "peerDependencies": {
+    "rxjs": "^7.8.1"
+  }
+}

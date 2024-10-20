@@ -1,0 +1,74 @@
+#!/usr/bin/env node
+import http from "http";
+import app from "../app.mjs";
+import usersService from "../database/services/users.service.mjs";
+
+/**
+ * @param {string} val
+ * @returns {string | number | false} Pipe ou porta em formato válido para uso ao instanciar novo servidor HTTP, ou false caso argumento seja inválido.
+ */
+const normalizePort = (val) => {
+  const port = parseInt(val, 10);
+
+  if (isNaN(port)) return val;
+
+  if (port >= 0) return port;
+
+  return false;
+};
+
+/**
+ * @param { string | number | false } port
+ * @returns Função de callback que reporta, em console, erros de inicialização do servidor.
+ */
+const onError = (port) => (error) => {
+  if (error.syscall !== "listen") {
+    throw error;
+  }
+
+  const bind = typeof port === "string" ? `Pipe ${port}` : `Porta ${port}`;
+
+  switch (error.code) {
+    case "EACCES":
+      console.error(bind + " requer privilégios elevados.");
+      process.exit(1);
+    case "EADDRINUSE":
+      console.error(bind + " já está em uso.");
+      process.exit(1);
+    default:
+      throw error;
+  }
+};
+
+/**
+ * @param {http.Server} server
+ * @returns Função de callback que reporta inicialização de sucesso do servidor.
+ */
+const onListening = (server) => () => {
+  const addr = server.address();
+  const bind =
+    typeof addr === "string" ? `no pipe ${addr}` : `na porta ${addr.port}`;
+
+  console.info(`Servidor iniciado ${bind}`);
+
+  // Cria dois registros no banco, só pra não começar vazio.
+  usersService.create({
+    name: "Adriana",
+    birthDate: new Date("1985-09-07T00:00:00.000Z"),
+    email: "dricacpa@gmail.com",
+  });
+
+  usersService.create({
+    name: "Diego",
+    birthDate: new Date("1986-02-10T00:00:00.000Z"),
+    email: "diego.bevilaqua86@gmail.com",
+  });
+};
+
+const port = normalizePort(process.env.SERVER_PORT || "3000");
+app.set("port", port);
+
+const server = http.createServer(app);
+server.listen(port);
+server.on("error", onError(port));
+server.on("listening", onListening(server));

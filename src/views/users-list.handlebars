@@ -1,0 +1,91 @@
+<div class="container my-5">
+  <div class="row">
+    <div class="col">
+      <div class="d-flex justify-content-between align-items-center">
+        <h1>Listagem de usuários</h1>
+        <a class="btn btn-link" href="./home">Voltar</a>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-3">
+    <div class="col">
+      <table class="table table-striped align-middle">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Data de nascimento</th>
+            <th>E-mail</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {{#each users}}
+          <tr>
+            <td>{{name}}</td>
+            <td>{{birthDate}}</td>
+            <td>{{email}}</td>
+            <td>
+              <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete-user-modal"
+                data-bs-user-name="{{name}}" data-bs-user-id="{{id}}">
+                Remover
+              </button>
+              <a href="./users-update/{{id}}" class="btn btn-info">
+                Atualizar
+              </a>
+            </td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="delete-user-modal" tabindex="-1" aria-labelledby="delete-user-modal-label"
+  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="delete-user-modal-label">Remover usuário</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body">
+        <p id="delete-user-modal-message"></p>
+      </div>
+      <div class="modal-footer">
+        <button id="delete-user-modal-button-reset" type="button" class="btn btn-secondary"
+          data-bs-dismiss="modal">Fechar</button>
+        <button id="delete-user-modal-button-remove" type="button" class="btn btn-danger">Remover</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function handleDeleteUserModalButtonRemoveClick(userId) {
+    return function (event) {
+      window.location.href = `./users-delete/${userId}`;
+    };
+  }
+
+  const deleteUserModal = document.getElementById("delete-user-modal");
+
+  if (deleteUserModal) {
+    deleteUserModal.addEventListener("show.bs.modal", function (event) {
+      const button = event.relatedTarget;
+      const id = button.getAttribute("data-bs-user-id");
+      const name = button.getAttribute("data-bs-user-name");
+      const deleteUserModalMessage = deleteUserModal.querySelector("#delete-user-modal-message");
+      const deleteUserModalButtonRemove = deleteUserModal.querySelector("#delete-user-modal-button-remove");
+
+      if (deleteUserModalMessage) {
+        deleteUserModalMessage.innerHTML = `Tem certeza que deseja remover o usuário <strong>${name}</strong>?`;
+        deleteUserModalButtonRemove.addEventListener("click", handleDeleteUserModalButtonRemoveClick(id), {
+          once: true,
+        });
+        deleteUserModalButtonRemove.setAttribute("data-bs-user-id", id);
+      }
+    });
+  }
+</script>
